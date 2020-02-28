@@ -1,0 +1,70 @@
+instances:
+  - name: es-master-01
+    dns:
+      - es-master-01 
+      - localhost
+    ip:
+      - 127.0.0.1
+
+  - name: es-master-02
+    dns:
+      - es-master-02 
+      - localhost
+    ip:
+      - 127.0.0.1
+
+  - name: es-master-03
+    dns:
+      - es-master-03 
+      - localhost
+    ip:
+      - 127.0.0.1
+
+  - name: es-data-hot-01
+    dns:
+      - es-data-hot-01
+      - localhost
+    ip:
+      - 127.0.0.1
+
+  - name: es-data-hot-02
+    dns:
+      - es-data-hot-02
+      - localhost
+    ip:
+      - 127.0.0.1
+
+  - name: es-data-hot-03
+    dns:
+      - es-data-hot-03
+      - localhost
+    ip:
+      - 127.0.0.1
+
+  - name: es-data-warm-01
+    dns:
+      - es-data-warm-01
+      - localhost
+    ip:
+      - 127.0.0.1
+
+  - name: es-data-warm-02
+    dns:
+      - es-data-warm-02
+      - localhost
+    ip:
+      - 127.0.0.1  
+
+  - name: es-data-cold-01
+    dns:
+      - es-data-cold-01
+      - localhost
+    ip:
+      - 127.0.0.1
+    
+  - name: es-lb
+    dns:
+      - es-lb
+      - localhost
+    ip:
+      - 127.0.0.1

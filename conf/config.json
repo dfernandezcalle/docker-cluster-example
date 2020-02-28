@@ -1,0 +1,9 @@
+{
+    "version": 2,
+    "remoteDnsServers": [
+        "8.8.8.8"
+    ],
+    "logLevel": "INFO",
+    "logFile": "console",
+    "registerContainerNames": true
+}

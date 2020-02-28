@@ -1,0 +1,12 @@
+version: "3"
+services:
+  dns-proxy:
+    image: defreitas/dns-proxy-server
+    hostname: dns-proxy
+    container_name: dns-proxy
+    ports:
+      - 5380:5380
+    volumes:
+      - ./conf/config.json:/app/conf/config.json
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /etc/resolv.conf:/etc/resolv.conf

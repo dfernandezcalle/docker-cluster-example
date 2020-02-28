@@ -1,0 +1,379 @@
+version: '2.2'
+
+services:
+  es-master-01:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.6.0
+    hostname: es-master-01
+    container_name: es-master-01
+    environment:
+      - node.name=es-master-01
+      - cluster.initial_master_nodes=es-master-01,es-master-02,es-master-03
+      - discovery.seed_hosts=es-master-02:9300,es-master-03:9300 
+      - cluster.name=elasticsearch-default
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - path.repo=/tmp/es-repo
+      - node.master=true 
+      - node.data=false 
+      - node.ingest=false
+      - node.attr.rack_id=rack_one
+      - xpack.license.self_generated.type=trial 
+      - xpack.security.enabled=true
+      - xpack.security.http.ssl.enabled=true
+      - xpack.security.http.ssl.key=$CERTS_DIR/es-master-01/es-master-01.key
+      - xpack.security.http.ssl.certificate_authorities=$CERTS_DIR/ca/ca.crt
+      - xpack.security.http.ssl.certificate=$CERTS_DIR/es-master-01/es-master-01.crt
+      - xpack.security.transport.ssl.enabled=true
+      - xpack.security.transport.ssl.verification_mode=certificate 
+      - xpack.security.transport.ssl.certificate_authorities=$CERTS_DIR/ca/ca.crt
+      - xpack.security.transport.ssl.certificate=$CERTS_DIR/es-master-01/es-master-01.crt
+      - xpack.security.transport.ssl.key=$CERTS_DIR/es-master-01/es-master-01.key
+    ulimits:
+      nofile:
+        soft: 65536
+        hard: 65536
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - ./certs:$CERTS_DIR
+
+  es-master-02:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.6.0
+    hostname: es-master-02
+    container_name: es-master-02
+    environment:  
+      - node.name=es-master-02
+      - cluster.initial_master_nodes=es-master-01,es-master-02,es-master-03
+      - discovery.seed_hosts=es-master-01:9300,es-master-03:9300 
+      - cluster.name=elasticsearch-default
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - path.repo=/tmp/es-repo
+      - node.master=true 
+      - node.data=false 
+      - node.ingest=false
+      - node.attr.rack_id=rack_two
+      - xpack.license.self_generated.type=trial 
+      - xpack.security.enabled=true
+      - xpack.security.http.ssl.enabled=true
+      - xpack.security.http.ssl.key=$CERTS_DIR/es-master-02/es-master-02.key
+      - xpack.security.http.ssl.certificate_authorities=$CERTS_DIR/ca/ca.crt
+      - xpack.security.http.ssl.certificate=$CERTS_DIR/es-master-02/es-master-02.crt
+      - xpack.security.transport.ssl.enabled=true
+      - xpack.security.transport.ssl.verification_mode=certificate 
+      - xpack.security.transport.ssl.certificate_authorities=$CERTS_DIR/ca/ca.crt
+      - xpack.security.transport.ssl.certificate=$CERTS_DIR/es-master-02/es-master-02.crt
+      - xpack.security.transport.ssl.key=$CERTS_DIR/es-master-02/es-master-02.key
+    ulimits:
+      nofile:
+        soft: 65536
+        hard: 65536
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - ./certs:$CERTS_DIR
+
+  es-master-03:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.6.0
+    hostname: es-master-03
+    container_name: es-master-03
+    environment:  
+      - node.name=es-master-03
+      - cluster.initial_master_nodes=es-master-01,es-master-02,es-master-03
+      - discovery.seed_hosts=es-master-01:9300,es-master-02:9300 
+      - cluster.name=elasticsearch-default
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - path.repo=/tmp/es-repo
+      - node.master=true 
+      - node.data=false 
+      - node.ingest=false
+      - node.attr.rack_id=rack_three
+      - xpack.license.self_generated.type=trial 
+      - xpack.security.enabled=true
+      - xpack.security.http.ssl.enabled=true
+      - xpack.security.http.ssl.key=$CERTS_DIR/es-master-03/es-master-03.key
+      - xpack.security.http.ssl.certificate_authorities=$CERTS_DIR/ca/ca.crt
+      - xpack.security.http.ssl.certificate=$CERTS_DIR/es-master-03/es-master-03.crt
+      - xpack.security.transport.ssl.enabled=true
+      - xpack.security.transport.ssl.verification_mode=certificate 
+      - xpack.security.transport.ssl.certificate_authorities=$CERTS_DIR/ca/ca.crt
+      - xpack.security.transport.ssl.certificate=$CERTS_DIR/es-master-03/es-master-03.crt
+      - xpack.security.transport.ssl.key=$CERTS_DIR/es-master-03/es-master-03.key
+    ulimits:
+      nofile:
+        soft: 65536
+        hard: 65536
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - ./certs:$CERTS_DIR
+
+  es-data-hot-01:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.6.0
+    hostname: es-data-hot-01
+    container_name: es-data-hot-01
+    environment:  
+      - node.name=es-data-hot-01
+      - cluster.initial_master_nodes=es-master-01,es-master-02,es-master-03
+      - discovery.seed_hosts=es-master-01:9300,es-master-02:9300,es-master-02:9300 
+      - cluster.name=elasticsearch-default
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - path.repo=/tmp/es-repo
+      - node.master=false 
+      - node.data=true 
+      - node.ingest=true
+      - node.attr.data=hot
+      - node.attr.rack_id=rack_one
+      - xpack.license.self_generated.type=trial 
+      - xpack.security.enabled=true
+      - xpack.security.http.ssl.enabled=true
+      - xpack.security.http.ssl.key=$CERTS_DIR/es-data-hot-01/es-data-hot-01.key
+      - xpack.security.http.ssl.certificate_authorities=$CERTS_DIR/ca/ca.crt
+      - xpack.security.http.ssl.certificate=$CERTS_DIR/es-data-hot-01/es-data-hot-01.crt
+      - xpack.security.transport.ssl.enabled=true
+      - xpack.security.transport.ssl.verification_mode=certificate 
+      - xpack.security.transport.ssl.certificate_authorities=$CERTS_DIR/ca/ca.crt
+      - xpack.security.transport.ssl.certificate=$CERTS_DIR/es-data-hot-01/es-data-hot-01.crt
+      - xpack.security.transport.ssl.key=$CERTS_DIR/es-data-hot-01/es-data-hot-01.key
+    ulimits:
+      nofile:
+        soft: 65536
+        hard: 65536
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:  
+      - ./certs:$CERTS_DIR
+
+  es-data-hot-02:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.6.0
+    hostname: es-data-hot-02
+    container_name: es-data-hot-02
+    environment:  
+      - node.name=es-data-hot-02
+      - cluster.initial_master_nodes=es-master-01,es-master-02,es-master-03
+      - discovery.seed_hosts=es-master-01:9300,es-master-02:9300,es-master-02:9300 
+      - cluster.name=elasticsearch-default
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - path.repo=/tmp/es-repo
+      - node.master=false 
+      - node.data=true 
+      - node.ingest=true
+      - node.attr.data=hot
+      - node.attr.rack_id=rack_two
+      - xpack.license.self_generated.type=trial 
+      - xpack.security.enabled=true
+      - xpack.security.http.ssl.enabled=true
+      - xpack.security.http.ssl.key=$CERTS_DIR/es-data-hot-02/es-data-hot-02.key
+      - xpack.security.http.ssl.certificate_authorities=$CERTS_DIR/ca/ca.crt
+      - xpack.security.http.ssl.certificate=$CERTS_DIR/es-data-hot-02/es-data-hot-02.crt
+      - xpack.security.transport.ssl.enabled=true
+      - xpack.security.transport.ssl.verification_mode=certificate 
+      - xpack.security.transport.ssl.certificate_authorities=$CERTS_DIR/ca/ca.crt
+      - xpack.security.transport.ssl.certificate=$CERTS_DIR/es-data-hot-02/es-data-hot-02.crt
+      - xpack.security.transport.ssl.key=$CERTS_DIR/es-data-hot-02/es-data-hot-02.key
+    ulimits:
+      nofile:
+        soft: 65536
+        hard: 65536
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - ./certs:$CERTS_DIR
+
+  es-data-hot-03:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.6.0
+    hostname: es-data-hot-03
+    container_name: es-data-hot-03
+    environment:  
+      - node.name=es-data-hot-03
+      - cluster.initial_master_nodes=es-master-01,es-master-02,es-master-03
+      - discovery.seed_hosts=es-master-01:9300,es-master-02:9300,es-master-02:9300 
+      - cluster.name=elasticsearch-default
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - path.repo=/tmp/es-repo
+      - node.master=false 
+      - node.data=true 
+      - node.ingest=true
+      - node.attr.data=hot
+      - node.attr.rack_id=rack_three
+      - xpack.license.self_generated.type=trial 
+      - xpack.security.enabled=true
+      - xpack.security.http.ssl.enabled=true
+      - xpack.security.http.ssl.key=$CERTS_DIR/es-data-hot-03/es-data-hot-03.key
+      - xpack.security.http.ssl.certificate_authorities=$CERTS_DIR/ca/ca.crt
+      - xpack.security.http.ssl.certificate=$CERTS_DIR/es-data-hot-03/es-data-hot-03.crt
+      - xpack.security.transport.ssl.enabled=true
+      - xpack.security.transport.ssl.verification_mode=certificate 
+      - xpack.security.transport.ssl.certificate_authorities=$CERTS_DIR/ca/ca.crt
+      - xpack.security.transport.ssl.certificate=$CERTS_DIR/es-data-hot-03/es-data-hot-03.crt
+      - xpack.security.transport.ssl.key=$CERTS_DIR/es-data-hot-03/es-data-hot-03.key
+    ulimits:
+      nofile:
+        soft: 65536
+        hard: 65536      
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - ./certs:$CERTS_DIR
+
+  es-data-warm-01:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.6.0
+    hostname: es-data-warm-01
+    container_name: es-data-warm-01
+    environment:  
+      - node.name=es-data-warm-01
+      - cluster.initial_master_nodes=es-master-01,es-master-02,es-master-03
+      - discovery.seed_hosts=es-master-01:9300,es-master-02:9300,es-master-02:9300 
+      - cluster.name=elasticsearch-default
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - path.repo=/tmp/es-repo
+      - node.master=false 
+      - node.data=true 
+      - node.ingest=false
+      - node.attr.data=warm
+      - node.attr.rack_id=rack_one
+      - xpack.license.self_generated.type=trial 
+      - xpack.security.enabled=true
+      - xpack.security.http.ssl.enabled=true
+      - xpack.security.http.ssl.key=$CERTS_DIR/es-data-warm-01/es-data-warm-01.key
+      - xpack.security.http.ssl.certificate_authorities=$CERTS_DIR/ca/ca.crt
+      - xpack.security.http.ssl.certificate=$CERTS_DIR/es-data-warm-01/es-data-warm-01.crt
+      - xpack.security.transport.ssl.enabled=true
+      - xpack.security.transport.ssl.verification_mode=certificate 
+      - xpack.security.transport.ssl.certificate_authorities=$CERTS_DIR/ca/ca.crt
+      - xpack.security.transport.ssl.certificate=$CERTS_DIR/es-data-warm-01/es-data-warm-01.crt
+      - xpack.security.transport.ssl.key=$CERTS_DIR/es-data-warm-01/es-data-warm-01.key
+    ulimits:
+      nofile:
+        soft: 65536
+        hard: 65536
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:    
+      - ./certs:$CERTS_DIR
+
+  es-data-warm-02:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.6.0
+    hostname: es-data-warm-02
+    container_name: es-data-warm-02
+    environment: 
+      - node.name=es-data-warm-02
+      - cluster.initial_master_nodes=es-master-01,es-master-02,es-master-03
+      - discovery.seed_hosts=es-master-01:9300,es-master-02:9300,es-master-02:9300 
+      - cluster.name=elasticsearch-default
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - path.repo=/tmp/es-repo
+      - node.master=false 
+      - node.data=true 
+      - node.ingest=false
+      - node.attr.data=warm
+      - node.attr.rack_id=rack_two
+      - xpack.license.self_generated.type=trial 
+      - xpack.security.enabled=true
+      - xpack.security.http.ssl.enabled=true
+      - xpack.security.http.ssl.key=$CERTS_DIR/es-data-warm-02/es-data-warm-02.key
+      - xpack.security.http.ssl.certificate_authorities=$CERTS_DIR/ca/ca.crt
+      - xpack.security.http.ssl.certificate=$CERTS_DIR/es-data-warm-02/es-data-warm-02.crt
+      - xpack.security.transport.ssl.enabled=true
+      - xpack.security.transport.ssl.verification_mode=certificate 
+      - xpack.security.transport.ssl.certificate_authorities=$CERTS_DIR/ca/ca.crt
+      - xpack.security.transport.ssl.certificate=$CERTS_DIR/es-data-warm-02/es-data-warm-02.crt
+      - xpack.security.transport.ssl.key=$CERTS_DIR/es-data-warm-02/es-data-warm-02.key
+    ulimits:
+      nofile:
+        soft: 65536
+        hard: 65536
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - ./certs:$CERTS_DIR
+
+  es-data-cold-01:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.6.0
+    hostname: es-data-cold-01
+    container_name: es-data-cold-01
+    environment:  
+      - node.name=es-data-cold-02
+      - cluster.initial_master_nodes=es-master-01,es-master-02,es-master-03
+      - discovery.seed_hosts=es-master-01:9300,es-master-02:9300,es-master-02:9300 
+      - cluster.name=elasticsearch-default
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - path.repo=/tmp/es-repo
+      - node.master=false 
+      - node.data=true 
+      - node.ingest=false
+      - node.attr.data=cold
+      - node.attr.rack_id=rack_one
+      - xpack.license.self_generated.type=trial 
+      - xpack.security.enabled=true
+      - xpack.security.http.ssl.enabled=true
+      - xpack.security.http.ssl.key=$CERTS_DIR/es-data-cold-01/es-data-cold-01.key
+      - xpack.security.http.ssl.certificate_authorities=$CERTS_DIR/ca/ca.crt
+      - xpack.security.http.ssl.certificate=$CERTS_DIR/es-data-cold-01/es-data-cold-01.crt
+      - xpack.security.transport.ssl.enabled=true
+      - xpack.security.transport.ssl.verification_mode=certificate 
+      - xpack.security.transport.ssl.certificate_authorities=$CERTS_DIR/ca/ca.crt
+      - xpack.security.transport.ssl.certificate=$CERTS_DIR/es-data-cold-01/es-data-cold-01.crt
+      - xpack.security.transport.ssl.key=$CERTS_DIR/es-data-cold-01/es-data-cold-01.key
+    ulimits:
+      nofile:
+        soft: 65536
+        hard: 65536
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - ./certs:$CERTS_DIR
+
+  es-lb:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.6.0
+    hostname: es-lb
+    container_name: es-lb
+    environment:  
+      - node.name=es-lb
+      - cluster.initial_master_nodes=es-master-01,es-master-02,es-master-03
+      - discovery.seed_hosts=es-master-01:9300,es-master-02:9300,es-master-02:9300 
+      - cluster.name=elasticsearch-default
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - path.repo=/tmp/es-repo
+      - node.master=false 
+      - node.data=false 
+      - node.ingest=false
+      - node.attr.data=cold
+      - node.attr.rack_id=rack_one
+      - xpack.license.self_generated.type=trial 
+      - xpack.security.enabled=true
+      - xpack.security.http.ssl.enabled=true
+      - xpack.security.http.ssl.key=$CERTS_DIR/es-lb/es-lb.key
+      - xpack.security.http.ssl.certificate_authorities=$CERTS_DIR/ca/ca.crt
+      - xpack.security.http.ssl.certificate=$CERTS_DIR/es-lb/es-lb.crt
+      - xpack.security.transport.ssl.enabled=true
+      - xpack.security.transport.ssl.verification_mode=certificate 
+      - xpack.security.transport.ssl.certificate_authorities=$CERTS_DIR/ca/ca.crt
+      - xpack.security.transport.ssl.certificate=$CERTS_DIR/es-lb/es-lb.crt
+      - xpack.security.transport.ssl.key=$CERTS_DIR/es-lb/es-lb.key
+    ulimits:
+      nofile:
+        soft: 65536
+        hard: 65536
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - ./certs:$CERTS_DIR

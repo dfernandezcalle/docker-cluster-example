@@ -1,0 +1,19 @@
+version: '3'
+services:
+  kibana-01:
+    container_name: kibana-01
+    hostname: kibana-01
+    image: docker.elastic.co/kibana/kibana:7.6.0
+    environment:
+      SERVER_NAME: kibana-01
+      ELASTICSEARCH_HOSTS: '["https://es-lb:9200"]'
+      ELASTICSEARCH_SSL_CERTIFICATEAUTHORITIES: $CERTS_DIR/ca/ca.crt
+      ELASTICSEARCH_SSL_CERT: $CERTS_DIR/es-lb/es-lb.crt
+      ELASTICSEARCH_SSL_KEY: $CERTS_DIR/es-lb/es-lb.key
+      ELASTICSEARCH_SSL_VERIFY: certificate
+      ELASTICSEARCH_USERNAME: kibana
+      ELASTICSEARCH_PASSWORD: {{kibana.password}}
+    ports:
+      - 80:5601
+    volumes:
+      - ./certs:$CERTS_DIR
